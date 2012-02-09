@@ -8,6 +8,7 @@ Created on 4 févr. 2012
 '''
 import time
 import sys
+import os
 from datetime import timedelta, datetime
 import threading
 import Tkinter as tk
@@ -135,7 +136,7 @@ class FunView(tk.Frame):
         self["background"]=self.backgroungColor
         self.pack(fill="both", expand=1)
                
-        self.logo = PhotoImage(file = sys.path[0]+'/agile-garden.gif')
+        self.logo = PhotoImage(file = sys.path[0]+'/logo.gif')
         self.labellogo=tk.Label(self, image=self.logo, background=self.backgroungColor)
         self.labellogo.pack(fill="both", expand=1)
 
