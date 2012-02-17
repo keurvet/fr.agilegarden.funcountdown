@@ -14,7 +14,14 @@ import threading
 import Tkinter as tk
 import tkFont
 from Tkinter import PhotoImage
+import pygame
 import webbrowser
+
+FREQ = 44100   # same as audio CD
+BITSIZE = -16  # unsigned 16 bit
+CHANNELS = 2   # 1 == mono, 2 == stereo
+BUFFER = 1024  # audio buffer size in no. of samples
+FRAMERATE = 30 # how often to check if playback has finished
 
 class CountDown(object):
       
@@ -117,11 +124,19 @@ class FunView(tk.Frame):
         self.fontColor = "white"
         self.backgroungColor="#1A171C"
         self.alertColor="#E75294"
+        self.logoFileName="logo.gif"
+        self.soundImageFileName="sound.gif"
+        self.nosoundImageFileName="nosound.gif"
+        self.soundFileName="meuh.wav"
+        self.sound=True
 
         self.master = master
         self.master.title("Fun Count Down - Set with numeric keys, <Return> to start/stop, <Escape> to reinitialize")
         self.master["background"]=self.backgroungColor
-        self.master.geometry("800x600")
+        if os.path.isfile(sys.path[0]+'/' + self.logoFileName) :
+            self.master.geometry("800x600")
+        else :
+            self.master.geometry("800x300")
 
         
         self.initialTime = 0
@@ -135,10 +150,11 @@ class FunView(tk.Frame):
         tk.Frame.__init__(self, self.master)
         self["background"]=self.backgroungColor
         self.pack(fill="both", expand=1)
-               
-        self.logo = PhotoImage(file = sys.path[0]+'/logo.gif')
-        self.labellogo=tk.Label(self, image=self.logo, background=self.backgroungColor)
-        self.labellogo.pack(fill="both", expand=1)
+        
+        if os.path.isfile(sys.path[0] + '/' + self.logoFileName):
+            self.logo = PhotoImage(file = sys.path[0] + '/' + self.logoFileName)
+            self.labellogo=tk.Label(self, image=self.logo, background=self.backgroungColor)
+            self.labellogo.pack(fill="both", expand=1)
 
         
         self.time=tk.StringVar()
@@ -148,10 +164,15 @@ class FunView(tk.Frame):
                 
         self.time.set(self.countDown.getCountStr())
         
+        self.soundImg = PhotoImage(file = sys.path[0] + '/' + self.soundImageFileName)
+        self.nosoundImg = PhotoImage(file = sys.path[0] + '/' + self.nosoundImageFileName)
+        self.labelsoundImg=tk.Label(self, image=self.soundImg, background=self.backgroungColor)
+        self.labelsoundImg.pack(fill="both", expand=1)
+        self.labelsoundImg.bind("<Button-1>", self.switchSound)
+
         self.link=tk.Label(self, background=self.backgroungColor, fg="#707172", text="http://www.agilegarden.fr")
         self.link.pack(fill="y", expand=1)
         
-        self.link.bind("<Button-1>", self.openAgilGardenSite)
         self.link.bind("<Enter>", self.overAgilGardenSite)
         self.link.bind("<Leave>", self.unoverAgilGardenSite)
         self.master.bind( '<Configure>', self.onWindowEvent )
@@ -165,13 +186,6 @@ class FunView(tk.Frame):
       
     ''' EVENTS '''
     
-    '''THIS IS THE METHOD THAT IS CALLED ASYNCHRONOUSLY BY THE NOTIFIER'''
-    def update(self):
-        self.time.set(self.countDown.getCountStr())  
-        self.update_idletasks()
-        if self.countDown.count == 0 : 
-            self.alert()
-
     def onWindowEvent(self, event):
         if event.type == '22':
             self.sefFontSize(self.master.winfo_width() / 8)
@@ -196,6 +210,7 @@ class FunView(tk.Frame):
             self.initTime()
                  
     def startStop(self, event):
+        self.secondsLabel["fg"]= self.fontColor
         if self.notifier.notifying :
             self.stop()
         else :
@@ -218,7 +233,22 @@ class FunView(tk.Frame):
     def unoverAgilGardenSite(self, event):
         self.link["fg"]="#707172"
         
+    def switchSound(self, event):
+        if self.sound :
+            self.sound = False
+            self.labelsoundImg["image"] = self.nosoundImg
+        else :
+            self.sound = True
+            self.labelsoundImg["image"] = self.soundImg
+    
     ''' /EVENTS '''
+
+    '''THIS IS THE METHOD THAT IS CALLED ASYNCHRONOUSLY BY THE NOTIFIER'''
+    def update(self):
+        self.time.set(self.countDown.getCountStr())  
+        self.update_idletasks()
+        if self.countDown.count == 0 : 
+            self.alert()
 
     def start(self):
         self.notifier.start()
@@ -239,6 +269,16 @@ class FunView(tk.Frame):
         self.time.set("") 
         time.sleep(0.5)
         self.time.set(self.countDown.getCountStr()) 
+        if self.sound and os.path.isfile(sys.path[0]+'/' + self.soundFileName) :
+            try:
+                pygame.mixer.init(FREQ, BITSIZE, CHANNELS, BUFFER)
+                sound = pygame.mixer.Sound("meuh.wav")
+                clock = pygame.time.Clock()
+                sound.play()
+                while pygame.mixer.get_busy():
+                    clock.tick(FRAMERATE)
+            except pygame.error:
+                pass
         
     def sefFontSize(self, size):
         self.secondsLabel["font"]=tkFont.Font(family=self.fontPolice,size=size,weight=self.fontWeight)
