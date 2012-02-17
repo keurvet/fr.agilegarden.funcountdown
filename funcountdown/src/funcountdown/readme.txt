@@ -2,28 +2,28 @@
 Fun CountDown Timer
 ===================
 
-Installation
-============
+Install
+=======
 
-- Installer python 2.7 (ne fonctionne pas en 3.x) : 
+- Install python 2.7 (doesn't work with 3.x) : 
 
-	- Sous Windows, télécharger et installer http://python.org/ftp/python/2.7.2/python-2.7.2.msi
-	- Sous ubuntu ::
+	- For Windows, download and install http://python.org/ftp/python/2.7.2/python-2.7.2.msi
+	- For ubuntu ::
 		
 		sudo apt-get install python
 	  
-	  (bien vérifier la version)
+	  (check the version)
 	
 	
 - Installer pygame :
 	
-	- Sur Windows, télécharger et installer http://pygame.org/ftp/pygame-1.9.2a0.win32-py2.7.msi
-	- Sur ubuntu ::
+	- For Windows, download and install  http://pygame.org/ftp/pygame-1.9.2a0.win32-py2.7.msi
+	- For ubuntu ::
 		
 		sudo apt-get install python-pygame
 
 
-Lancement
-=========
+Launch
+======
 
-Lancer funcountdown.py (double-click sur le fichier sous windows, idem sous Ubuntu après avoir rendu le fichier éxécutable).
+Launch funcountdown.py (double-click on the file on windows, or Ubuntu after adding executable rights on it).
