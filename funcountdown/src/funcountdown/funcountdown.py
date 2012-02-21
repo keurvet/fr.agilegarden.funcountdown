@@ -7,7 +7,6 @@ Created on 4 févr. 2012
 @license: GPL
 '''
 import time
-import sys
 import os
 from datetime import timedelta, datetime
 import threading
@@ -133,7 +132,7 @@ class FunView(tk.Frame):
         self.master = master
         self.master.title("Fun Count Down - Set with numeric keys, <Return> to start/stop, <Escape> to reinitialize")
         self.master["background"]=self.backgroungColor
-        if os.path.isfile(sys.path[0]+'/' + self.logoFileName) :
+        if os.path.isfile(self.getResourcesPath() + self.logoFileName) :
             self.master.geometry("800x600")
         else :
             self.master.geometry("800x300")
@@ -151,8 +150,8 @@ class FunView(tk.Frame):
         self["background"]=self.backgroungColor
         self.pack(fill="both", expand=1)
         
-        if os.path.isfile(sys.path[0] + '/' + self.logoFileName):
-            self.logo = PhotoImage(file = sys.path[0] + '/' + self.logoFileName)
+        if os.path.isfile(self.getResourcesPath() + self.logoFileName):
+            self.logo = PhotoImage(file = self.getResourcesPath() + self.logoFileName)
             self.labellogo=tk.Label(self, image=self.logo, background=self.backgroungColor)
             self.labellogo.pack(fill="both", expand=1)
 
@@ -164,8 +163,8 @@ class FunView(tk.Frame):
                 
         self.time.set(self.countDown.getCountStr())
         
-        self.soundImg = PhotoImage(file = sys.path[0] + '/' + self.soundImageFileName)
-        self.nosoundImg = PhotoImage(file = sys.path[0] + '/' + self.nosoundImageFileName)
+        self.soundImg = PhotoImage(file = self.getResourcesPath() + self.soundImageFileName)
+        self.nosoundImg = PhotoImage(file = self.getResourcesPath() + self.nosoundImageFileName)
         self.labelsoundImg=tk.Label(self, image=self.soundImg, background=self.backgroungColor)
         self.labelsoundImg.pack(fill="both", expand=1)
         self.labelsoundImg.bind("<Button-1>", self.switchSound)
@@ -269,7 +268,7 @@ class FunView(tk.Frame):
         self.time.set("") 
         time.sleep(0.5)
         self.time.set(self.countDown.getCountStr()) 
-        if self.sound and os.path.isfile(sys.path[0]+'/' + self.soundFileName) :
+        if self.sound and os.path.isfile(self.getResourcesPath() + self.soundFileName) :
             try:
                 pygame.mixer.init(FREQ, BITSIZE, CHANNELS, BUFFER)
                 sound = pygame.mixer.Sound("meuh.wav")
@@ -282,6 +281,11 @@ class FunView(tk.Frame):
         
     def sefFontSize(self, size):
         self.secondsLabel["font"]=tkFont.Font(family=self.fontPolice,size=size,weight=self.fontWeight)
+
+    def getResourcesPath(self):
+        '''There is a problem when freezing the application with the following line using cx_freeze'''
+        '''return sys.path[0] + '/' '''
+        return ''
 
         
 if __name__ == '__main__':

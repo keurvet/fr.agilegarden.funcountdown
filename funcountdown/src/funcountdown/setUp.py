@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
  
 # source d'inspiration: http://wiki.wxpython.org/cx_freeze
+# but, that not works
  
 import sys, os
 from cx_Freeze import setup, Executable
@@ -12,11 +13,13 @@ path = sys.path.append(os.path.join("."))
 includes = []
 excludes = []
 packages = []
+xfiles = []
  
-options = {"path": path,
+options = {"include_files": xfiles,
+           "path": path,
            "includes": includes,
            "excludes": excludes,
-           "packages": packages
+           "packages": packages,
            }
  
 #############################################################################
